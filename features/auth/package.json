@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/auth.handler.ts"
+    ".": "./src/auth.handler.ts",
+    "./plugin": "./src/auth.plugin.ts",
+    "./feature.json": "./feature.json"
   },
   "scripts": {
     "typecheck": "tsc"

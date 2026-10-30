@@ -1,0 +1,20 @@
+{
+  "name": "@repo/dev-server",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@feature/auth": "workspace:*",
+    "@feature/catalog": "workspace:*",
+    "@repo/fastify-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3"
+  }
+}

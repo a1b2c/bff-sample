@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/catalog.handler.ts"
+    ".": "./src/catalog.handler.ts",
+    "./plugin": "./src/catalog.plugin.ts",
+    "./feature.json": "./feature.json"
   },
   "scripts": {
     "typecheck": "tsc"

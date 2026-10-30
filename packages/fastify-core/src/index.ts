@@ -1,3 +1,4 @@
+export { buildApp } from './buildApp.ts';
 export { createFeatureHandler } from './createFeatureHandler.ts';
 export {
   AppError,

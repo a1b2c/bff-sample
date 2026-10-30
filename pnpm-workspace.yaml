@@ -2,6 +2,7 @@ packages:
   - 'packages/*'
   - 'features/*'
   - 'infra'
+  - 'tools/*'
 
 # `pnpm add` pins exact versions (1.2.3, not ^1.2.3), matching every package.json here.
 saveExact: true
