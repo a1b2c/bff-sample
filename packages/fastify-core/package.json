@@ -10,6 +10,8 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@fastify/aws-lambda": "6.4.2",
+    "@repo/feature-manifest": "workspace:*",
     "fastify": "5.12.7",
     "fastify-type-provider-zod": "7.0.0",
     "zod": "4.6.7"

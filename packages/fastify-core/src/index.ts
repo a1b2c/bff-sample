@@ -1,4 +1,4 @@
-export { createFastify, type AppInstance } from './createFastify.ts';
+export { createFeatureHandler } from './createFeatureHandler.ts';
 export {
   AppError,
   BadRequestError,

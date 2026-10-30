@@ -1,15 +1,13 @@
+import type { FeatureManifest } from '@repo/feature-manifest';
 import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 
 /**
- * A self-contained slice of the API (catalog, auth, ...) that can be mounted on
- * the shared Fastify instance.
+ * A self-contained slice of the API (catalog, auth, ...) deployed as its own
+ * Lambda. Its routes are mounted at `/{version}{prefix}` from the manifest.
  */
 export interface FeatureApi {
-  /**
-   * Mount point for the feature's routes, e.g. '/cart'.
-   * Must start with '/'; omit it for routes that live at the root.
-   */
-  readonly prefix?: string;
+  /** The feature's `feature.json`, imported with `with { type: 'json' }`. */
+  readonly manifest: FeatureManifest;
 
   /**
    * Registers the feature's routes. Typed with the Zod provider, so `schema.body`
