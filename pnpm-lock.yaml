@@ -277,6 +277,12 @@ importers:
       '@aws-sdk/lib-dynamodb':
         specifier: 3.1160.0
         version: 3.1160.0(@aws-sdk/client-dynamodb@3.1160.0)
+      fastify:
+        specifier: 5.12.7
+        version: 5.12.7
+      fastify-plugin:
+        specifier: 6.0.1
+        version: 6.0.1
     devDependencies:
       '@types/node':
         specifier: 26.6.6
