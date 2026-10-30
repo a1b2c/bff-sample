@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    // Language and runtime: Node 24 runs ES2024 natively, nothing is downlevelled
+    "target": "ES2024",
+    "lib": ["ES2024"],
+
+    // Resolve imports exactly like Node does with "type": "module"
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    // TS 6 doesn't pick up @types/* automatically: list Node's types explicitly
+    "types": ["node"],
+
+    // Strictness
+    "strict": true,
+    "noUncheckedIndexedAccess": true, // arr[0] may be undefined: you must handle it
+    "noImplicitOverride": true, // overriding a method needs the `override` keyword
+    "noFallthroughCasesInSwitch": true, // every switch case must break or return
+
+    // Each file compiles on its own, as tsx, esbuild and Vitest do
+    "verbatimModuleSyntax": true, // type-only imports must use `import type`
+    "isolatedModules": true,
+    "erasableSyntaxOnly": true, // no enum/namespace/param properties: Node strips types for `cdk synth`
+
+    // Import the real file name: import { x } from './buildApp.ts'
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true,
+
+    // tsc only checks types; tsx (local) and esbuild (CDK) run the code
+    "noEmit": true,
+    "skipLibCheck": true // don't type-check node_modules: faster
+  }
+}

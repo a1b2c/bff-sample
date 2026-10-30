@@ -1,0 +1,27 @@
+packages:
+  - 'packages/*'
+  - 'features/*'
+  - 'infra'
+
+# `pnpm add` pins exact versions (1.2.3, not ^1.2.3), matching every package.json here.
+saveExact: true
+
+# esbuild must be allowed to run its install script: the CDK NodejsFunction
+# construct shells out to it when bundling each feature lambda.
+allowBuilds:
+  esbuild: true
+minimumReleaseAgeExclude:
+  - '@aws-sdk/client-dynamodb@3.1160.0'
+  - '@aws-sdk/core@3.979.0'
+  - '@aws-sdk/credential-provider-env@3.972.79'
+  - '@aws-sdk/credential-provider-http@3.972.81'
+  - '@aws-sdk/credential-provider-ini@3.973.24'
+  - '@aws-sdk/credential-provider-login@3.972.86'
+  - '@aws-sdk/credential-provider-node@3.972.91'
+  - '@aws-sdk/credential-provider-process@3.972.79'
+  - '@aws-sdk/credential-provider-sso@3.973.23'
+  - '@aws-sdk/credential-provider-web-identity@3.972.85'
+  - '@aws-sdk/dynamodb-codec@3.973.53'
+  - '@aws-sdk/lib-dynamodb@3.1160.0'
+  - '@aws-sdk/nested-clients@3.997.53'
+  - '@aws-sdk/token-providers@3.1160.0'

@@ -1,0 +1,21 @@
+{
+  "name": "@feature/auth",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/auth.handler.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@fastify/aws-lambda": "6.4.2",
+    "@repo/fastify-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "8.10.164",
+    "@types/node": "26.6.6",
+    "typescript": "6.0.3"
+  }
+}
