@@ -1,5 +1,5 @@
 import type { FeatureManifest } from '@repo/feature-manifest';
-import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
+import type { FastifyPluginAsyncZod, FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 
 /**
  * A self-contained slice of the API (catalog, auth, ...) deployed as its own
@@ -11,8 +11,9 @@ export interface FeatureApi {
 
   /**
    * Registers the feature's routes. Typed with the Zod provider, so `schema.body`
-   * and `schema.response` are inferred from the Zod schemas. Call `done()` once
-   * registration is finished.
+   * and `schema.response` are inferred from the Zod schemas. Use an async plugin
+   * to `await app.register(...)` what the feature needs, such as `databasePlugin`.
+   * A callback plugin calls `done()` once registration is finished.
    */
-  readonly plugin: FastifyPluginCallbackZod;
+  readonly plugin: FastifyPluginCallbackZod | FastifyPluginAsyncZod;
 }

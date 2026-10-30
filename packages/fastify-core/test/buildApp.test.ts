@@ -1,4 +1,5 @@
-import type { FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
+import fp from 'fastify-plugin';
+import type { FastifyPluginAsyncZod, FastifyPluginCallbackZod } from 'fastify-type-provider-zod';
 import { describe, expect, it } from 'vitest';
 import { buildApp, type FeatureApi } from '../src/index.ts';
 
@@ -22,6 +23,24 @@ describe('buildApp', () => {
 
     expect(auth.json()).toEqual({ feature: 'auth' });
     expect(catalog.json()).toEqual({ feature: 'catalog' });
+  });
+
+  it('waits for an async plugin to finish registering', async () => {
+    const plugin: FastifyPluginAsyncZod = async (app) => {
+      await app.register(
+        fp((inner, _opts, done) => {
+          inner.decorate('fromDependency', 'ready');
+          done();
+        }),
+      );
+      const value = app.getDecorator<string>('fromDependency');
+      app.get('/ping', () => ({ value }));
+    };
+
+    const app = await buildApp([{ ...feature('auth'), plugin }], { logger: false });
+    const response = await app.inject({ method: 'GET', url: '/v1/auth/ping' });
+
+    expect(response.json()).toEqual({ value: 'ready' });
   });
 
   it('rejects an invalid manifest', async () => {

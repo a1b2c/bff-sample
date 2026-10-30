@@ -12,7 +12,9 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@aws-sdk/lib-dynamodb": "3.1160.0",
     "@fastify/aws-lambda": "6.4.2",
+    "@repo/database": "workspace:*",
     "@repo/fastify-core": "workspace:*",
     "fastify-type-provider-zod": "7.0.0",
     "zod": "4.6.7"

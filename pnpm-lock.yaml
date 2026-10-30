@@ -199,9 +199,15 @@ importers:
 
   features/auth:
     dependencies:
+      '@aws-sdk/lib-dynamodb':
+        specifier: 3.1160.0
+        version: 3.1160.0(@aws-sdk/client-dynamodb@3.1160.0)
       '@fastify/aws-lambda':
         specifier: 6.4.2
         version: 6.4.2
+      '@repo/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       '@repo/fastify-core':
         specifier: workspace:*
         version: link:../../packages/fastify-core
@@ -312,6 +318,9 @@ importers:
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
+      fastify-plugin:
+        specifier: 6.0.1
+        version: 6.0.1
       typescript:
         specifier: 6.0.3
         version: 6.0.3

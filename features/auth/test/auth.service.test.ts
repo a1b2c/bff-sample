@@ -3,6 +3,7 @@ import { createAuthService } from '../src/auth.service.ts';
 
 describe('auth service', () => {
   it('ping reports the auth feature as up', () => {
-    expect(createAuthService().ping()).toEqual({ status: 'ok', feature: 'auth' });
+    const auth = createAuthService({ ping: () => 'ok' });
+    expect(auth.ping()).toEqual({ status: 'ok', feature: 'auth' });
   });
 });
