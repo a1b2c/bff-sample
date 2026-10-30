@@ -1,0 +1,6 @@
+{
+  "name": "catalog",
+  "version": "v1",
+  "prefix": "/catalog",
+  "handler": "src/catalog.handler.ts"
+}
