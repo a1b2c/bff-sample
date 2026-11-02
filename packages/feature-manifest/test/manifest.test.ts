@@ -35,6 +35,15 @@ describe('parseManifest', () => {
     expect(() => parseManifest({ ...valid, name })).toThrow(/at name/);
   });
 
+  it('accepts the optional table field', () => {
+    const manifest = { ...valid, table: 'auth' };
+    expect(parseManifest(manifest)).toEqual(manifest);
+  });
+
+  it.each([true, 'Auth', '1auth', 'auth_x', ''])('rejects table %j', (table) => {
+    expect(() => parseManifest({ ...valid, table })).toThrow(/at table/);
+  });
+
   it('rejects unknown keys, so typos are caught', () => {
     expect(() => parseManifest({ ...valid, verison: 'v1' })).toThrow(/Unrecognized key: "verison"/);
   });

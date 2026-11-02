@@ -172,6 +172,9 @@ importers:
       '@types/node':
         specifier: 26.6.6
         version: 26.6.6
+      esbuild:
+        specifier: 0.28.2
+        version: 0.28.2
       eslint:
         specifier: 10.13.0
         version: 10.13.0
@@ -255,9 +258,15 @@ importers:
 
   infra:
     dependencies:
+      '@repo/feature-manifest':
+        specifier: workspace:*
+        version: link:../packages/feature-manifest
       aws-cdk-lib:
         specifier: 2.275.0
         version: 2.275.0(constructs@10.8.1)
+      cdk-nag:
+        specifier: 3.0.2
+        version: 3.0.2(aws-cdk-lib@2.275.0(constructs@10.8.1))(constructs@10.8.1)
       constructs:
         specifier: 10.8.1
         version: 10.8.1
@@ -1028,6 +1037,13 @@ packages:
 
   cacheable@2.5.0:
     resolution: {integrity: sha512-60cyAOytib/OzBw1JNSoSV/boK1AtHryDIjvVBk7XbN4ugfkM3+Sry7fEjNgPMGgOjuaZPAp8ruZ0Cxafwyq9g==}
+
+  cdk-nag@3.0.2:
+    resolution: {integrity: sha512-mmrspXnYRK5RmBTfEu5EQZmTwGxaVCESJ5GXbQq62eOkVFd4vc4MuIfSbav74K4J7irXQVJaY3d5js0kVQMWdA==}
+    engines: {node: '>= 18.12.0'}
+    peerDependencies:
+      aws-cdk-lib: ^2.257.0
+      constructs: ^10.5.1
 
   chai@6.3.0:
     resolution: {integrity: sha512-XWAtwJ6OHO+tj0EKCs0Y2UamnyOxseZWltU4x2U2wh8g4AigdjwvtUjvLP2tqkA/avxHEtzxNaqGq/YGNwckKg==}
@@ -2333,6 +2349,11 @@ snapshots:
       hookified: 1.15.1
       keyv: 5.6.0
       qified: 0.10.1
+
+  cdk-nag@3.0.2(aws-cdk-lib@2.275.0(constructs@10.8.1))(constructs@10.8.1):
+    dependencies:
+      aws-cdk-lib: 2.275.0(constructs@10.8.1)
+      constructs: 10.8.1
 
   chai@6.3.0: {}
 

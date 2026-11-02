@@ -12,6 +12,11 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "check": "pnpm run typecheck && pnpm run lint && pnpm run format:check && pnpm run test",
+    "infra:synth": "pnpm --filter ecom-infra run synth",
+    "infra:diff": "pnpm --filter ecom-infra run diff",
+    "infra:deploy": "pnpm --filter ecom-infra run deploy",
+    "infra:bootstrap": "pnpm --filter ecom-infra run bootstrap",
+    "infra:test": "vitest run --project ecom-infra",
     "prepare": "husky"
   },
   "engines": {
@@ -29,6 +34,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@types/node": "26.6.6",
+    "esbuild": "0.28.2",
     "eslint": "10.13.0",
     "eslint-config-prettier": "10.1.8",
     "globals": "17.13.0",

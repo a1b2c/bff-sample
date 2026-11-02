@@ -2,5 +2,6 @@
   "name": "auth",
   "version": "v1",
   "prefix": "/auth",
-  "handler": "src/auth.handler.ts"
+  "handler": "src/auth.handler.ts",
+  "table": "auth"
 }

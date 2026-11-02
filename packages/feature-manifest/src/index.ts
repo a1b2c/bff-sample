@@ -2,13 +2,17 @@ import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { z } from 'zod';
 
+const ResourceName = z
+  .string()
+  .regex(/^[a-z][a-z0-9-]*$/, 'Must be lowercase letters, digits and dashes');
+
 /**
  * A feature's `feature.json`: what infra needs to deploy it and route traffic
  * to it. Plain data with no secrets, since the handler bundles it.
  */
 export const FeatureManifest = z.strictObject({
   /** Lambda and construct name, e.g. 'auth'. Only used for AWS resource names. */
-  name: z.string().regex(/^[a-z][a-z0-9-]*$/, 'Must be lowercase letters, digits and dashes'),
+  name: ResourceName,
   /** API version the feature's routes live under, e.g. 'v1'. */
   version: z.string().regex(/^v[1-9]\d*$/, "Must look like 'v1'"),
   /** Path under the version, e.g. '/auth'. No trailing slash. */
@@ -17,6 +21,8 @@ export const FeatureManifest = z.strictObject({
     .regex(/^(\/[a-z0-9-]+)+$/, "Must look like '/auth' (lowercase, no trailing slash)"),
   /** Lambda entry file, relative to the folder holding `feature.json`. */
   handler: z.string().min(1),
+  /** The DynamoDB table this feature uses. Features naming the same table share it. Defaults to no table. */
+  table: ResourceName.optional(),
 });
 export type FeatureManifest = z.infer<typeof FeatureManifest>;
 

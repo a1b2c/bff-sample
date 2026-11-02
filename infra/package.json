@@ -7,11 +7,13 @@
     "typecheck": "tsc",
     "synth": "cdk synth",
     "diff": "cdk diff",
-    "deploy": "cdk deploy",
+    "deploy": "cdk deploy --all",
     "bootstrap": "cdk bootstrap"
   },
   "dependencies": {
+    "@repo/feature-manifest": "workspace:*",
     "aws-cdk-lib": "2.275.0",
+    "cdk-nag": "3.0.2",
     "constructs": "10.8.1"
   },
   "devDependencies": {

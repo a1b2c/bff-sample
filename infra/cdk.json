@@ -5,5 +5,7 @@
     "include": ["bin/**", "lib/**"],
     "exclude": ["cdk.out", "node_modules"]
   },
-  "context": {}
+  "context": {
+    "@aws-cdk/core:defaultCrossStackReferences": "strong"
+  }
 }
