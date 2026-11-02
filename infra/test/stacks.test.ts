@@ -1,6 +1,6 @@
-import { App, Stack, Validations } from 'aws-cdk-lib';
+import { App, Lazy, Stack, Validations } from 'aws-cdk-lib';
 import { Annotations, Match, Template } from 'aws-cdk-lib/assertions';
-import { AttributeType, CfnTable, Table } from 'aws-cdk-lib/aws-dynamodb';
+import { AttributeType, CfnGlobalTable, CfnTable, Table, TableV2 } from 'aws-cdk-lib/aws-dynamodb';
 import { AwsSolutionsChecks } from 'cdk-nag';
 import { spawnSync } from 'node:child_process';
 import { existsSync, readdirSync } from 'node:fs';
@@ -314,15 +314,79 @@ describe('guardrails catch bad infrastructure', () => {
     expect(() => checked.synth()).toThrow();
   });
 
-  it('flags a table that has no point-in-time recovery', () => {
-    const app = new App();
-    const stack = new Stack(app, 'Bad');
-    const table = new CfnTable(stack, 'NoRecovery', {
-      keySchema: [{ attributeName: 'pk', keyType: 'HASH' }],
-    });
-    new RequireTableRecovery().visit(table);
+  describe('point-in-time recovery rule', () => {
+    const keySchema = [{ attributeName: 'pk', keyType: 'HASH' }];
+    const partitionKey = { name: 'pk', type: AttributeType.STRING };
+    const enabled = { pointInTimeRecoveryEnabled: true };
+    const disabled = { pointInTimeRecoveryEnabled: false };
 
-    Annotations.fromStack(stack).hasError('*', Match.stringLikeRegexp('point-in-time recovery'));
+    function cfnGlobalTable(stack: Stack, recovery: (typeof enabled | undefined)[]) {
+      new CfnGlobalTable(stack, 'Table', {
+        keySchema,
+        attributeDefinitions: [{ attributeName: 'pk', attributeType: 'S' }],
+        replicas: recovery.map((pointInTimeRecoverySpecification, i) => ({
+          region: `us-east-${i + 1}`,
+          pointInTimeRecoverySpecification,
+        })),
+      });
+    }
+
+    function recoveryErrors(addTable: (stack: Stack) => void) {
+      const stack = new Stack(new App(), 'Tables');
+      addTable(stack);
+      for (const node of stack.node.findAll()) new RequireTableRecovery().visit(node);
+      return Annotations.fromStack(stack).findError(
+        '*',
+        Match.stringLikeRegexp('point-in-time recovery'),
+      );
+    }
+
+    it.each<[string, (stack: Stack) => void]>([
+      ['a CfnTable with no setting', (s) => new CfnTable(s, 'Table', { keySchema })],
+      [
+        'a CfnTable with it disabled',
+        (s) => new CfnTable(s, 'Table', { keySchema, pointInTimeRecoverySpecification: disabled }),
+      ],
+      ['a Table with no setting', (s) => new Table(s, 'Table', { partitionKey })],
+      ['a TableV2 with no setting', (s) => new TableV2(s, 'Table', { partitionKey })],
+      ['a CfnGlobalTable with no setting', (s) => cfnGlobalTable(s, [undefined])],
+      [
+        'a CfnGlobalTable with one replica missing it',
+        (s) => cfnGlobalTable(s, [enabled, undefined]),
+      ],
+      [
+        'a CfnGlobalTable with one replica disabling it',
+        (s) => cfnGlobalTable(s, [enabled, disabled]),
+      ],
+    ])('flags %s', (_name, addTable) => {
+      expect(recoveryErrors(addTable)).toHaveLength(1);
+    });
+
+    it.each<[string, (stack: Stack) => void]>([
+      [
+        'a CfnTable',
+        (s) => new CfnTable(s, 'Table', { keySchema, pointInTimeRecoverySpecification: enabled }),
+      ],
+      [
+        'a CfnTable enabling it through a token',
+        (s) =>
+          new CfnTable(s, 'Table', {
+            keySchema,
+            pointInTimeRecoverySpecification: Lazy.any({ produce: () => enabled }),
+          }),
+      ],
+      [
+        'a Table',
+        (s) => new Table(s, 'Table', { partitionKey, pointInTimeRecoverySpecification: enabled }),
+      ],
+      [
+        'a TableV2',
+        (s) => new TableV2(s, 'Table', { partitionKey, pointInTimeRecoverySpecification: enabled }),
+      ],
+      ['a CfnGlobalTable', (s) => cfnGlobalTable(s, [enabled, enabled])],
+    ])('accepts %s with it enabled', (_name, addTable) => {
+      expect(recoveryErrors(addTable)).toHaveLength(0);
+    });
   });
 
   it('rejects an unknown stage', () => {
