@@ -118,3 +118,25 @@ The project is currently validated by synth, tests and policy checks only. Deplo
 - `permissionsBoundaryName`, an IAM policy that must already exist in each account, since this repo does not create it
 
 API routes have no API Gateway authorizer: authorization is the job of each feature's handler.
+
+## Future plans
+
+### Choosing compute by traffic
+
+Features run on Lambda today, but they aren't written for Lambda. A feature is a plain Fastify plugin, and only its one-line handler file, through `createFeatureHandler`, knows about Lambda events. `pnpm dev` already runs the same plugins as an ordinary HTTP server, which is what a move to a long-running platform would need.
+
+That leaves room to choose compute based on real traffic and cost, without rewriting business logic:
+
+| Compute                                                                                                                                                      | Where it fits                                                                                                        |
+| ------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Lambda functions (today)                                                                                                                                     | Low or spiky traffic, with no servers to run and no cost when idle                                                   |
+| [Lambda Web Functions](https://builder.aws.com/content/3KgdjNoXaCVsE5cpXwlOXiGModm/aws-lambda-web-functions-bring-your-http-server-leave-the-handler-behind) | Busier features that spend most of a request waiting on DynamoDB, as one environment can serve many requests at once |
+| Fargate                                                                                                                                                      | Steady, sustained traffic where always-on containers cost less than per-request pricing                              |
+
+Each feature deploys on its own, so one busy feature could move while the rest stay put. Public paths such as `/v1/auth` should stay the same, so clients wouldn't notice a move.
+
+A move isn't only a code change, and none has been tried yet:
+
+- **Infrastructure:** `FeatureService` is built around Lambda, including its aliases, CodeDeploy canaries, alarms and API Gateway integration. Each new platform needs its own version of these.
+- **Concurrency:** today's Lambda functions handle one request at a time, while the other two options share a process between requests. Features should keep request data out of module-level state so they're ready for this.
+- **Long-running processes:** a server also needs health checks and a graceful shutdown, which the Lambda setup doesn't have today.
